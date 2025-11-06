@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Internships</h3>
+    <div>
+      <button class="btn btn-outline-secondary me-2" id="exportInternships">Export</button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInternModal">Add Internship</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+  <table class="table table-hover">
+    <thead class="table-light"><tr><th>ID</th><th>Title</th><th>Company</th><th>Dates</th><th>Stipend</th><th>Seats</th><th>Actions</th></tr></thead>
+    <tbody id="internshipsTable">
+      {% for i in internships %}
+      <tr data-id="{{ i.id }}">
+        <td class="col-id">{{ i.id }}</td>
+        <td class="col-title">{{ i.title }}</td>
+        <td class="col-company" data-company-id="{{ i.company_id }}">{{ i.company_name }}</td>
+        <td class="col-dates">{{ i.start_date }} - {{ i.end_date }}</td>
+        <td class="col-stipend">{{ i.stipend }}</td>
+        <td class="col-seats">{{ i.seats }}</td>
+        <td>
+          <button class="btn btn-sm btn-icon btn-outline-secondary btn-edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button class="btn btn-sm btn-icon btn-outline-danger btn-delete" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <!-- Add Intern Modal -->
+  <div class="modal fade" id="addInternModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Add Internship</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <form id="addInternForm">
+            <input type="hidden" name="id" value="">
+            <div class="mb-2"><label class="form-label">Title</label><input class="form-control" name="title" required></div>
+            <div class="mb-2"><label class="form-label">Company</label><select class="form-control" name="company_id">{% for c in companies %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></div>
+            <div class="row">
+              <div class="col mb-2"><label class="form-label">Start Date</label><input class="form-control" type="date" name="start_date"></div>
+              <div class="col mb-2"><label class="form-label">End Date</label><input class="form-control" type="date" name="end_date"></div>
+            </div>
+            <div class="mb-2"><label class="form-label">Stipend</label><input class="form-control" name="stipend"></div>
+            <div class="mb-2"><label class="form-label">Seats</label><input class="form-control" type="number" min="1" name="seats" value="1"></div>
+            <div class="mb-2"><label class="form-label">Description</label><textarea class="form-control" name="description"></textarea></div>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary" id="saveInternBtn">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editInternModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Edit Internship</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <form id="editInternForm">
+            <input type="hidden" name="id" value="">
+            <div class="mb-2"><label class="form-label">Title</label><input class="form-control" name="title" required></div>
+            <div class="mb-2"><label class="form-label">Company</label><select class="form-control" name="company_id">{% for c in companies %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></div>
+            <div class="row">
+              <div class="col mb-2"><label class="form-label">Start Date</label><input class="form-control" type="date" name="start_date"></div>
+              <div class="col mb-2"><label class="form-label">End Date</label><input class="form-control" type="date" name="end_date"></div>
+            </div>
+            <div class="mb-2"><label class="form-label">Stipend</label><input class="form-control" name="stipend"></div>
+            <div class="mb-2"><label class="form-label">Seats</label><input class="form-control" type="number" min="1" name="seats" value="1"></div>
+            <div class="mb-2"><label class="form-label">Description</label><textarea class="form-control" name="description"></textarea></div>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary" id="updateInternBtn">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

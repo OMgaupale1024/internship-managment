@@ -1,0 +1,76 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Students</h3>
+    <div>
+      <button class="btn btn-outline-secondary me-2" id="exportStudents">Export</button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add Student</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+  <table class="table table-hover">
+    <thead class="table-light"><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Branch</th><th>Actions</th></tr></thead>
+    <tbody id="studentsTable">
+      {% for s in students %}
+      <tr data-id="{{ s.id }}">
+        <td class="col-id">{{ s.id }}</td>
+        <td class="col-name">{{ s.name }}</td>
+        <td class="col-email">{{ s.email }}</td>
+        <td class="col-phone">{{ s.phone }}</td>
+        <td class="col-branch">{{ s.branch }}</td>
+        <td>
+          <button class="btn btn-sm btn-icon btn-outline-secondary btn-edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button class="btn btn-sm btn-icon btn-outline-danger btn-delete" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <!-- Add Student Modal -->
+  <div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Add Student</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <form id="addStudentForm">
+            <input type="hidden" name="id" value="">
+            <div class="mb-2"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+            <div class="mb-2"><label class="form-label">Email</label><input class="form-control" name="email" type="email"></div>
+            <div class="mb-2"><label class="form-label">Phone</label><input class="form-control" name="phone"></div>
+            <div class="mb-2"><label class="form-label">Branch</label><input class="form-control" name="branch"></div>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary" id="saveStudentBtn">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Student Modal (reuses add form) -->
+  <div class="modal fade" id="editStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Edit Student</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <form id="editStudentForm">
+            <input type="hidden" name="id" value="">
+            <div class="mb-2"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+            <div class="mb-2"><label class="form-label">Email</label><input class="form-control" name="email" type="email"></div>
+            <div class="mb-2"><label class="form-label">Phone</label><input class="form-control" name="phone"></div>
+            <div class="mb-2"><label class="form-label">Branch</label><input class="form-control" name="branch"></div>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary" id="updateStudentBtn">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

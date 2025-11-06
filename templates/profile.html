@@ -1,0 +1,116 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <div class="avatar bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width:100px;height:100px;font-size:2.5rem">
+                            {{ session.get('user')[0]|upper }}
+                        </div>
+                    </div>
+                    <h5 class="card-title">{{ profile.name }}</h5>
+                    <p class="text-muted">{{ session.get('role')|title }}</p>
+                    {% if session.get('role') == 'student' %}
+                        <p class="mb-1"><i class="fa-solid fa-graduation-cap me-2"></i>{{ profile.branch }}</p>
+                    {% endif %}
+                    <p class="mb-1"><i class="fa-solid fa-envelope me-2"></i>{{ profile.email }}</p>
+                    <p class="mb-1"><i class="fa-solid fa-phone me-2"></i>{{ profile.phone }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">{{ 'Student' if session.get('role') == 'student' else 'Company' }} Information</h5>
+                    <form method="post" class="needs-validation" novalidate>
+                        {% if session.get('role') == 'student' %}
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" name="name" value="{{ profile.name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Branch</label>
+                                <input type="text" class="form-control" name="branch" value="{{ profile.branch }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control" name="phone" value="{{ profile.phone }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" value="{{ profile.email }}" readonly>
+                                <small class="text-muted">Email cannot be changed</small>
+                            </div>
+                        {% else %}
+                            <div class="mb-3">
+                                <label class="form-label">Company Name</label>
+                                <input type="text" class="form-control" name="name" value="{{ profile.name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contact Person</label>
+                                <input type="text" class="form-control" name="contact_person" value="{{ profile.contact_person }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control" name="phone" value="{{ profile.phone }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" value="{{ profile.email }}" readonly>
+                                <small class="text-muted">Email cannot be changed</small>
+                            </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            {% if session.get('role') == 'student' %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Resume</h5>
+                    <form method="post" action="/upload_resume" enctype="multipart/form-data" class="mb-3">
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="resume" accept=".pdf,.doc,.docx">
+                            <button class="btn btn-primary" type="submit">Upload</button>
+                        </div>
+                    </form>
+                    {% if profile.resume %}
+                        <div class="d-flex align-items-center justify-content-between border rounded p-3">
+                            <div>
+                                <i class="fa-solid fa-file-pdf text-danger me-2"></i>
+                                {{ profile.resume }}
+                            </div>
+                            <div>
+                                <a href="/download_resume" class="btn btn-sm btn-outline-primary me-2">Download</a>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteResume()">Delete</button>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-muted">No resume uploaded yet</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteResume() {
+    if(confirm('Are you sure you want to delete your resume?')) {
+        fetch('/delete_resume', {method: 'POST'})
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'ok') {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to delete resume');
+                }
+            });
+    }
+}
+</script>
+{% endblock %}
