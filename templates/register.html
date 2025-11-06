@@ -1,44 +1,181 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title mb-4">Create an Account</h4>
-        {% if error %}
-          <div class="alert alert-danger">{{ error }}</div>
-        {% endif %}
-        <form method="post">
-          <div class="mb-3">
-            <label class="form-label">Account Type</label>
-            <select class="form-select" name="account_type" required>
-              <option value="student">Student</option>
-              <option value="company">Company</option>
-            </select>
+<div class="login-container">
+  <div class="row justify-content-center align-items-center min-vh-80">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-lg border-0 login-card">
+        <div class="card-body p-5">
+          <div class="text-center mb-4">
+            <div class="login-icon mb-3">
+              <i class="fa-solid fa-user-plus fa-3x text-primary"></i>
+            </div>
+            <h3 class="fw-bold mb-2">Create an Account</h3>
+            <p class="text-muted">Join our internship management platform</p>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-control" name="password" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" name="confirm_password" required>
-          </div>
-          <div class="d-flex justify-content-between align-items-center">
-            <a href="/login" class="text-decoration-none">Already have an account?</a>
-            <button type="submit" class="btn btn-primary">Register</button>
-          </div>
-        </form>
+          
+          {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-2"></i>{{ error }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endif %}
+          
+          <form method="post" id="registerForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="fa-solid fa-user-tag me-2 text-muted"></i>Account Type
+              </label>
+              <select class="form-select form-select-lg" name="account_type" id="account_type" required onchange="updateFormFields()">
+                <option value="">Select Account Type</option>
+                <option value="student">Student</option>
+                <option value="company">Company</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="fa-solid fa-user me-2 text-muted"></i>Username
+              </label>
+              <input type="text" class="form-control form-control-lg" name="username" required placeholder="Choose a username">
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="fa-solid fa-envelope me-2 text-muted"></i>Email
+              </label>
+              <input type="email" class="form-control form-control-lg" name="email" required placeholder="your.email@example.com">
+            </div>
+            
+            <!-- Student-specific fields -->
+            <div id="studentFields" style="display: none;">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="fa-solid fa-id-card me-2 text-muted"></i>Full Name
+                </label>
+                <input type="text" class="form-control form-control-lg" name="student_name" placeholder="Your full name">
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="fa-solid fa-phone me-2 text-muted"></i>Phone
+                </label>
+                <input type="tel" class="form-control form-control-lg" name="student_phone" placeholder="+91-XXXXXXXXXX">
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="fa-solid fa-graduation-cap me-2 text-muted"></i>Branch
+                </label>
+                <select class="form-select form-select-lg" name="student_branch">
+                  <option value="">Select Branch</option>
+                  <option value="CSE">Computer Science Engineering</option>
+                  <option value="IT">Information Technology</option>
+                  <option value="ECE">Electronics & Communication</option>
+                  <option value="EEE">Electrical & Electronics</option>
+                  <option value="ME">Mechanical Engineering</option>
+                  <option value="CE">Civil Engineering</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Company-specific fields -->
+            <div id="companyFields" style="display: none;">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="fa-solid fa-building me-2 text-muted"></i>Company Name
+                </label>
+                <input type="text" class="form-control form-control-lg" name="company_name" placeholder="Your company name">
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="fa-solid fa-user-tie me-2 text-muted"></i>Contact Person
+                </label>
+                <input type="text" class="form-control form-control-lg" name="contact_person" placeholder="Contact person name">
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="fa-solid fa-phone me-2 text-muted"></i>Phone
+                </label>
+                <input type="tel" class="form-control form-control-lg" name="company_phone" placeholder="+91-XXXXXXXXXX">
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="fa-solid fa-lock me-2 text-muted"></i>Password
+              </label>
+              <div class="input-group">
+                <input type="password" class="form-control form-control-lg" name="password" id="password" required placeholder="Create a password">
+                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password')">
+                  <i class="fa-solid fa-eye" id="passwordEye"></i>
+                </button>
+              </div>
+              <small class="text-muted">Must be at least 6 characters</small>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="fa-solid fa-lock me-2 text-muted"></i>Confirm Password
+              </label>
+              <div class="input-group">
+                <input type="password" class="form-control form-control-lg" name="confirm_password" id="confirm_password" required placeholder="Confirm your password">
+                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirm_password')">
+                  <i class="fa-solid fa-eye" id="confirmPasswordEye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+              <i class="fa-solid fa-user-plus me-2"></i>Create Account
+            </button>
+            
+            <div class="text-center">
+              <p class="text-muted mb-0">
+                Already have an account? 
+                <a href="/login" class="text-decoration-none fw-semibold">Sign In</a>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+function updateFormFields() {
+  const accountType = document.getElementById('account_type').value;
+  const studentFields = document.getElementById('studentFields');
+  const companyFields = document.getElementById('companyFields');
+  
+  studentFields.style.display = accountType === 'student' ? 'block' : 'none';
+  companyFields.style.display = accountType === 'company' ? 'block' : 'none';
+  
+  // Make fields required/optional based on selection
+  const studentInputs = studentFields.querySelectorAll('input, select');
+  const companyInputs = companyFields.querySelectorAll('input, select');
+  
+  studentInputs.forEach(input => {
+    input.required = accountType === 'student';
+  });
+  
+  companyInputs.forEach(input => {
+    input.required = accountType === 'company';
+  });
+}
+
+function togglePassword(fieldId) {
+  const field = document.getElementById(fieldId);
+  const eyeIcon = document.getElementById(fieldId === 'password' ? 'passwordEye' : 'confirmPasswordEye');
+  
+  if (field.type === 'password') {
+    field.type = 'text';
+    eyeIcon.classList.remove('fa-eye');
+    eyeIcon.classList.add('fa-eye-slash');
+  } else {
+    field.type = 'password';
+    eyeIcon.classList.remove('fa-eye-slash');
+    eyeIcon.classList.add('fa-eye');
+  }
+}
+</script>
 {% endblock %}

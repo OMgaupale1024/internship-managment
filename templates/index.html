@@ -50,73 +50,192 @@
   <!-- Dashboard Overview for Logged In Users -->
   <div class="row mb-4">
     <div class="col-md-12">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Welcome back, {{ session.get('user') }}!</h4>
-          <p class="text-muted">Here's your overview for today</p>
+      <div class="card highlight-card">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h3 class="card-title mb-2">Welcome back, {{ session.get('user') }}!</h3>
+              <p class="text-muted mb-0">
+                <i class="fa-solid fa-user-tag me-2"></i>
+                {{ session.get('role')|title }} Dashboard
+              </p>
+            </div>
+            <div class="text-end">
+              <div class="badge bg-primary fs-6 px-3 py-2">
+                <i class="fa-solid fa-calendar-day me-2"></i>Today
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Active Students</h5>
-          <p class="card-text">Total: {{ students|length }}</p>
-          <a href="/students" class="btn btn-outline-primary btn-sm">Manage Students</a>
-        </div>
+  <div class="dashboard-stats">
+    {% if role == 'admin' %}
+    <div class="stat-card">
+      <div class="stat-card-icon primary">
+        <i class="fa-solid fa-graduation-cap"></i>
       </div>
+      <h3 class="mb-1">{{ students|length }}</h3>
+      <p class="text-muted mb-2">Active Students</p>
+      <a href="/students" class="btn btn-sm btn-outline-primary">
+        <i class="fa-solid fa-arrow-right me-1"></i>Manage
+      </a>
     </div>
-    <div class="col-md-4">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Registered Companies</h5>
-          <p class="card-text">Total: {{ companies|length }}</p>
-          <a href="/companies" class="btn btn-outline-primary btn-sm">Manage Companies</a>
-        </div>
+    <div class="stat-card">
+      <div class="stat-card-icon success">
+        <i class="fa-solid fa-building"></i>
       </div>
+      <h3 class="mb-1">{{ companies|length }}</h3>
+      <p class="text-muted mb-2">Registered Companies</p>
+      <a href="/companies" class="btn btn-sm btn-outline-success">
+        <i class="fa-solid fa-arrow-right me-1"></i>Manage
+      </a>
     </div>
-    <div class="col-md-4">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Open Internships</h5>
-          <p class="card-text">Total: {{ internships|length }}</p>
-          <a href="/internships" class="btn btn-outline-primary btn-sm">Manage Internships</a>
-        </div>
+    <div class="stat-card">
+      <div class="stat-card-icon info">
+        <i class="fa-solid fa-briefcase"></i>
       </div>
+      <h3 class="mb-1">{{ internships|length }}</h3>
+      <p class="text-muted mb-2">Open Internships</p>
+      <a href="/internships" class="btn btn-sm btn-outline-info">
+        <i class="fa-solid fa-arrow-right me-1"></i>Manage
+      </a>
     </div>
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+        <i class="fa-solid fa-file-alt"></i>
+      </div>
+      <h3 class="mb-1">{{ applications|length }}</h3>
+      <p class="text-muted mb-2">Total Applications</p>
+      <a href="/applications" class="btn btn-sm btn-outline-danger">
+        <i class="fa-solid fa-arrow-right me-1"></i>View All
+      </a>
+    </div>
+    {% elif role == 'company' %}
+    <div class="stat-card">
+      <div class="stat-card-icon info">
+        <i class="fa-solid fa-briefcase"></i>
+      </div>
+      <h3 class="mb-1">{{ internships|length }}</h3>
+      <p class="text-muted mb-2">Posted Internships</p>
+      <a href="/internships" class="btn btn-sm btn-outline-info">
+        <i class="fa-solid fa-arrow-right me-1"></i>Manage
+      </a>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon success">
+        <i class="fa-solid fa-file-alt"></i>
+      </div>
+      <h3 class="mb-1">{{ applications|length }}</h3>
+      <p class="text-muted mb-2">Applications Received</p>
+      <a href="/applications" class="btn btn-sm btn-outline-success">
+        <i class="fa-solid fa-arrow-right me-1"></i>View All
+      </a>
+    </div>
+    {% else %}
+    <div class="stat-card">
+      <div class="stat-card-icon info">
+        <i class="fa-solid fa-briefcase"></i>
+      </div>
+      <h3 class="mb-1">{{ internships|length }}</h3>
+      <p class="text-muted mb-2">Available Internships</p>
+      <a href="/internships" class="btn btn-sm btn-outline-info">
+        <i class="fa-solid fa-search me-1"></i>Browse
+      </a>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon success">
+        <i class="fa-solid fa-file-alt"></i>
+      </div>
+      <h3 class="mb-1">{{ applications|length }}</h3>
+      <p class="text-muted mb-2">My Applications</p>
+      <a href="/applications" class="btn btn-sm btn-outline-success">
+        <i class="fa-solid fa-arrow-right me-1"></i>View All
+      </a>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon primary">
+        <i class="fa-solid fa-building"></i>
+      </div>
+      <h3 class="mb-1">{{ companies|length }}</h3>
+      <p class="text-muted mb-2">Registered Companies</p>
+      <a href="/companies" class="btn btn-sm btn-outline-primary">
+        <i class="fa-solid fa-arrow-right me-1"></i>View All
+      </a>
+    </div>
+    {% endif %}
   </div>
 
-  <h4 class="mt-4">Recent Applications</h4>
+  {% if applications %}
   <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="fa-solid fa-clock-rotate-left me-2"></i>Recent Applications
+      </h5>
+    </div>
     <div class="table-responsive">
       <table class="table table-hover mb-0">
         <thead>
           <tr>
+            {% if role == 'admin' %}
             <th>Student</th>
+            {% endif %}
+            {% if role == 'company' %}
+            <th>Student</th>
+            {% endif %}
             <th>Internship</th>
+            {% if role == 'admin' or role == 'company' %}
+            <th>Company</th>
+            {% endif %}
             <th>Status</th>
             <th>Applied At</th>
+            {% if role == 'admin' or role == 'company' %}
+            <th>Actions</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
-          {% for a in applications[:8] %}
+          {% for a in applications[:10] %}
           <tr>
-            <td>{{ a.student_name }}</td>
-            <td>{{ a.internship_title }}</td>
+            {% if role == 'admin' %}
+            <td><strong>{{ a.student_name or 'N/A' }}</strong></td>
+            {% endif %}
+            {% if role == 'company' %}
+            <td><strong>{{ a.student_name or 'N/A' }}</strong></td>
+            {% endif %}
+            <td>{{ a.internship_title or 'N/A' }}</td>
+            {% if role == 'admin' %}
+            <td>{{ a.company_name or 'N/A' }}</td>
+            {% endif %}
             <td>
-              <span class="badge bg-{{ 'success' if a.status == 'Selected' else ('danger' if a.status == 'Rejected' else 'primary') }}">
+              <span class="badge bg-{{ 'success' if a.status == 'Selected' else ('danger' if a.status == 'Rejected' else ('warning' if a.status == 'Under Review' else 'primary')) }}">
                 {{ a.status }}
               </span>
             </td>
-            <td>{{ a.applied_at }}</td>
+            <td>{{ a.applied_at.strftime('%b %d, %Y') if a.applied_at else 'N/A' }}</td>
+            {% if role == 'admin' or role == 'company' %}
+            <td>
+              <a href="/applications" class="btn btn-sm btn-outline-primary">
+                <i class="fa-solid fa-eye"></i>
+              </a>
+            </td>
+            {% endif %}
           </tr>
           {% endfor %}
+          {% if applications|length == 0 %}
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">
+              <i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i>
+              No applications yet
+            </td>
+          </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
   </div>
+  {% endif %}
   {% endif %}
 {% endblock %}

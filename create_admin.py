@@ -2,11 +2,7 @@
 # Helper to create an admin user in the local internship_db using config.DB_CONFIG
 import sys
 import subprocess
-try:
-    import bcrypt
-except Exception:
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'bcrypt'])
-    import bcrypt
+from werkzeug.security import generate_password_hash
 
 try:
     import mysql.connector
@@ -21,9 +17,9 @@ password = '123456'
 email = 'nake@gamil.com'
 role = 'admin'
 
-hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+hashed = generate_password_hash(password)
 
-print('Generated bcrypt hash for user', username)
+print('Generated password hash for user', username)
 
 conn = mysql.connector.connect(**DB_CONFIG)
 cur = conn.cursor()
