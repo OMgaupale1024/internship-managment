@@ -7,40 +7,16 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
-# bcrypt hashes created with the `bcrypt` package (e.g. $2b$...) are not
-# understood by werkzeug.check_password_hash. Import bcrypt and provide a
-# small helper that will use the appropriate verifier depending on the
-# stored hash format.
-try:
-    import bcrypt
-except Exception:
-    bcrypt = None
-
-
 def verify_password(stored_hash, password):
-    """Verify a password against a stored hash.
-
-    - If the stored hash looks like a bcrypt hash (starts with $2), use
-      bcrypt.checkpw.
-    - Otherwise fall back to werkzeug.check_password_hash which handles
-      the framework-generated pbkdf2 hashes.
+    """Verify a password against a stored hash using werkzeug.
+    All passwords are stored using werkzeug's generate_password_hash (scrypt).
     """
     if not stored_hash:
         return False
-    # bcrypt hashes look like: $2b$12$... or $2a$..., etc.
-    if isinstance(stored_hash, str) and stored_hash.startswith('$2'):
-        if bcrypt is None:
-            # bcrypt library not available — can't verify
-            return False
-        try:
-            return bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
-        except Exception:
-            return False
-    # default: use werkzeug
     try:
         return check_password_hash(stored_hash, password)
-    except ValueError:
-        # if werkzeug cannot parse the hash, fail safely
+    except (ValueError, TypeError):
+        # If werkzeug cannot parse the hash, fail safely
         return False
 import datetime
 
@@ -83,21 +59,29 @@ def company_required(fn):
     return wrapper
 
 def ensure_admin():
-    # create a default admin user if none exists
+    # create a default admin user if none exists, or update password if admin exists but can't login
     try:
-        cnt = models.get_user_count()
-        if cnt == 0:
-            # default credentials: admin / admin123 (please change)
-            pw = generate_password_hash('admin123')
-            # add default admin with an email for schemas requiring it
+        admin_user = models.get_user_by_username('admin')
+        if not admin_user:
+            # No admin exists, create one
+            # default credentials: admin / 1024 (please change)
+            pw = generate_password_hash('1024')
             try:
-                models.add_user('admin', pw, 'admin@example.com', role='admin')
-            except TypeError:
-                # fallback for older schema: try previous signature
-                models.add_user('admin', pw, role='admin')
-            print('Created default admin user: username=admin password=admin123')
-    except Exception:
+                models.add_user('admin', pw, 'admin@internship.com', role='admin')
+                print('[SUCCESS] Created default admin user: username=admin password=1024')
+            except Exception as e:
+                print(f'[WARNING] Could not create admin user: {e}')
+        else:
+            # Admin exists, verify password works
+            # If password verification fails, we'll update it
+            if not verify_password(admin_user['password_hash'], '1024'):
+                # Password doesn't match, update it
+                pw = generate_password_hash('1024')
+                models.update_password(admin_user['id'], pw)
+                print('[SUCCESS] Updated admin password: username=admin password=1024')
+    except Exception as e:
         # if users table doesn't exist or DB not ready, ignore here
+        print(f'[WARNING] Could not ensure admin user exists: {e}')
         pass
 
 @app.route('/')
@@ -315,6 +299,9 @@ def register():
     if not username or not password or not confirm or not email or not account_type:
         return render_template('register.html', error='All fields are required')
     
+    if len(password) < 6:
+        return render_template('register.html', error='Password must be at least 6 characters long')
+    
     if password != confirm:
         return render_template('register.html', error='Passwords do not match')
         
@@ -325,11 +312,36 @@ def register():
     if models.get_user_by_username(username):
         return render_template('register.html', error='Username already exists')
     
+    # Check if email exists
+    if models.get_user_by_email(email):
+        return render_template('register.html', error='Email already registered')
+    
     # Create user
     try:
         pw_hash = generate_password_hash(password)
-        # pass email to add_user (models.add_user signature requires email)
+        # Create user account
         models.add_user(username, pw_hash, email, role=account_type)
+
+        # Create corresponding student or company record
+        if account_type == 'student':
+            student_name = data.get('student_name') or username
+            student_phone = data.get('student_phone')
+            student_branch = data.get('student_branch')
+            try:
+                models.add_student(student_name, email, student_phone, student_branch)
+            except Exception as e:
+                # If student creation fails, continue anyway (user can update profile later)
+                print(f"Warning: Could not create student record: {e}")
+        
+        elif account_type == 'company':
+            company_name = data.get('company_name') or username
+            contact_person = data.get('contact_person')
+            company_phone = data.get('company_phone')
+            try:
+                models.add_company(company_name, contact_person, email, company_phone)
+            except Exception as e:
+                # If company creation fails, continue anyway (user can update profile later)
+                print(f"Warning: Could not create company record: {e}")
 
         # Log them in
         session['user'] = username
@@ -339,12 +351,13 @@ def register():
         send_email(
             email,
             "Welcome to Internship Management System",
-            f"Hi {username},\n\nWelcome to the Internship Management System. Your account has been created successfully."
+            f"Hi {username},\n\nWelcome to the Internship Management System. Your {account_type} account has been created successfully."
         )
 
         return redirect(url_for('index'))
     except Exception as e:
-        return render_template('register.html', error='Registration failed')
+        print(f"Registration error: {e}")
+        return render_template('register.html', error=f'Registration failed: {str(e)}')
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -435,7 +448,7 @@ def profile():
 def logout():
     session.pop('user', None)
     session.pop('role', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route('/api/table_export/<table_name>')

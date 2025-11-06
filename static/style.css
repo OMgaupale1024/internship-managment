@@ -1,14 +1,350 @@
-/* Base */
-body {
-  background: #f3f6f9;
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+/* ============================================
+   Base Styles
+   ============================================ */
+:root {
+  --primary-color: #0d6efd;
+  --secondary-color: #6c757d;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+  --light-bg: #f8f9fa;
+  --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --card-shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
-/* Layout */
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* ============================================
+   Layout
+   ============================================ */
 .container {
   max-width: 1200px;
 }
 
+.min-vh-80 {
+  min-height: 80vh;
+}
+
+/* ============================================
+   Navigation
+   ============================================ */
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.nav-profile-link {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.nav-profile-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.avatar {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   Login Page
+   ============================================ */
+.login-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+  margin: -2rem 0;
+}
+
+.login-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  background: white;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-icon {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* ============================================
+   Cards
+   ============================================ */
+.card {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.card:hover {
+  box-shadow: var(--card-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 0.75rem 0.75rem 0 0 !important;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+}
+
+.highlight-card {
+  background: linear-gradient(180deg, #fff, #f8fbff);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+/* ============================================
+   Forms
+   ============================================ */
+.form-control:focus,
+.form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-label {
+  color: #495057;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-control-lg {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1.25rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #653a8f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+.btn-icon {
+  padding: 0.35rem 0.5rem;
+}
+
+/* ============================================
+   Tables
+   ============================================ */
+.table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.table thead th {
+  border: none;
+  font-weight: 600;
+  padding: 1rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+}
+
+.table td, .table th {
+  vertical-align: middle;
+  padding: 1rem;
+}
+
+.table-responsive {
+  border-radius: 0.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+/* ============================================
+   Badges
+   ============================================ */
+.badge {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+/* Status Badge Colors */
+.bg-green-100 { background-color: #d1e7dd; }
+.text-green-800 { color: #0f5132; }
+.bg-blue-100 { background-color: #cfe2ff; }
+.text-blue-800 { color: #084298; }
+.bg-yellow-100 { background-color: #fff3cd; }
+.text-yellow-800 { color: #664d03; }
+.bg-red-100 { background-color: #f8d7da; }
+.text-red-800 { color: #842029; }
+.bg-gray-100 { background-color: #f3f4f6; }
+.text-gray-800 { color: #1f2937; }
+
+/* ============================================
+   Modals
+   ============================================ */
+.modal-dialog.modal-lg {
+  max-width: 800px;
+}
+
+.modal-content {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 1rem 1rem 0 0;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* ============================================
+   Alerts
+   ============================================ */
+.alert {
+  border-radius: 0.5rem;
+  border: none;
+  padding: 1rem 1.25rem;
+}
+
+.alert-dismissible .btn-close {
+  padding: 0.75rem 1.25rem;
+}
+
+/* ============================================
+   Dashboard Cards
+   ============================================ */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  box-shadow: var(--card-shadow-lg);
+  transform: translateY(-5px);
+}
+
+.stat-card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.stat-card-icon.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.stat-card-icon.success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+}
+
+.stat-card-icon.info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+/* ============================================
+   Utilities
+   ============================================ */
 .p-8 {
   padding: 2rem;
 }
@@ -17,7 +353,6 @@ body {
   margin-bottom: 2rem;
 }
 
-/* Typography */
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -27,83 +362,43 @@ body {
   font-weight: 600;
 }
 
-/* Navigation */
-.navbar-brand {
-  font-weight: 700;
+.fw-semibold {
+  font-weight: 600;
 }
 
-.nav-profile-link {
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-}
-
-.nav-profile-link:hover {
-  background: rgba(255,255,255,0.1);
-}
-
-/* Components */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  font-weight: 500;
-}
-
-/* Table Styles */
-.table-auto {
-  table-layout: auto;
-}
-
-.table td, .table th {
-  vertical-align: middle;
-}
-
-/* Modal Styles */
-.modal-dialog.modal-lg {
-  max-width: 800px;
-}
-
-.modal-content {
-  border: none;
-  border-radius: 0.75rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-.modal-header {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-/* Forms */
-.form-control:focus, .form-select:focus {
-  border-color: #3b82f6;
-  box-shadow: none;
-}
-
-/* Buttons */
-.btn-icon {
-  padding: .35rem .5rem;
-}
-
-/* Custom Cards */
-.highlight-card {
-  background: linear-gradient(180deg,#fff,#f8fbff);
-  border: 1px solid rgba(0,0,0,0.04);
-  box-shadow: 0 1px 2px rgba(16,24,40,0.02);
-}
-
-/* Utilities */
-.min-w-\[300px\] {
+.min-w-300 {
   min-width: 300px;
 }
 
-/* Status Badge Colors */
-.bg-green-100 { background-color: #dcfce7; }
-.text-green-800 { color: #166534; }
-.bg-blue-100 { background-color: #dbeafe; }
-.text-blue-800 { color: #1e40af; }
-.bg-yellow-100 { background-color: #fef9c3; }
-.text-yellow-800 { color: #854d0e; }
-.bg-red-100 { background-color: #fee2e2; }
-.text-red-800 { color: #991b1b; }
-.bg-gray-100 { background-color: #f3f4f6; }
-.text-gray-800 { color: #1f2937; }
+/* ============================================
+   Animations
+   ============================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 1rem;
+  }
+  
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+}
